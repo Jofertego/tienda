@@ -5,7 +5,6 @@ import java.util.List;
 public interface ClienteDAO{
     void guardar(Cliente cliente);
     List<Cliente> listar();
-    Cliente buscarPorId(int id);
     void actualizar(Cliente cliente);
     void eliminar(int id);
 }

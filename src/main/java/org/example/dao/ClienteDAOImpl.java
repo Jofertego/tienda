@@ -16,10 +16,13 @@ public class ClienteDAOImpl implements ClienteDAO{
     @Override
     public void guardar(Cliente cliente) {
         String sql = "INSERT INTO clientes (nombre, telefono) VALUES (?, ?)";
+
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, cliente.getNombre());
             statement.setString(2, cliente.getTelefono());
+
             statement.executeUpdate();
+            System.out.println("Cliente guardado correctamente");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -28,61 +31,52 @@ public class ClienteDAOImpl implements ClienteDAO{
     @Override
     public List<Cliente> listar() {
         List<Cliente> clientes = new ArrayList<>();
-        String sql = "SELECT id_cliente, nombre, telefono FROM clientes";
-        try (Statement statement = connection.createStatement();
-             ResultSet rs = statement.executeQuery(sql)) {
-            while (rs.next()) {
-                clientes.add(new Cliente(
-                        rs.getInt("id_cliente"),
-                        rs.getString("nombre"),
-                        rs.getString("telefono")
-                ));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return clientes;
-    }
+        String sql = "SELECT * FROM clientes";
 
-    @Override
-    public Cliente buscarPorId(int id) {
-        String sql = "SELECT id_cliente, nombre, telefono FROM clientes WHERE id_cliente = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return new Cliente(
-                            rs.getInt("id_cliente"),
-                            rs.getString("nombre"),
-                            rs.getString("telefono")
-                    );
-                }
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            while (resultSet.next()) {
+                Cliente cliente1 = new Cliente();
+                cliente1.setIdCliente(resultSet.getInt("id_cliente"));
+                cliente1.setNombre(resultSet.getString("nombre"));
+                cliente1.setTelefono(resultSet.getString("telefono"));
+
+                clientes.add(cliente1);
+                System.out.println("Cliente listado correctamente");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+
+        return clientes;
     }
 
     @Override
     public void actualizar(Cliente cliente) {
         String sql = "UPDATE clientes SET nombre = ?, telefono = ? WHERE id_cliente = ?";
+
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, cliente.getNombre());
             statement.setString(2, cliente.getTelefono());
             statement.setInt(3, cliente.getIdCliente());
+
             statement.executeUpdate();
+            System.out.println("Cliente actualizado correctamente.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void eliminar(int id) {
+    public void eliminar(int id_cliente) {
         String sql = "DELETE FROM clientes WHERE id_cliente = ?";
+
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
+            statement.setInt(1, id_cliente);
+
             statement.executeUpdate();
+            System.out.println("Cliente eliminado correctamente.");
         } catch (SQLException e) {
             e.printStackTrace();
         }

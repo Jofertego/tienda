@@ -3,9 +3,8 @@ import org.example.model.Venta;
 import java.util.List;
 
 public interface VentaDAO{
-
     void guardar(Venta venta);
-
     List<Venta> listar();
-
+    void actualizar(Venta venta);
+    void eliminar(int id);
 }
